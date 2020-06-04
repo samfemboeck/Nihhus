@@ -32,10 +32,8 @@ namespace Nihhus.Components
         State<Player> _swimState = new PlayerSwimState();
         State<Player> _catchState = new PlayerCatchState();
 
-        public override void Register(Zen.Entity entity)
-        {
-            base.Register(entity);
-            
+        public override void Mount()
+        {   
             Mover = Entity.GetComponent<Mover>();
             Animator = Entity.GetComponent<SpriteAnimator>();
             

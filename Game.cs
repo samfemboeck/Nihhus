@@ -7,6 +7,7 @@ namespace Nihhus
         public override void Start()
         {
             Machine = new Level1();
+            Screen.SetSize(800, 600);
         }
     }
 }

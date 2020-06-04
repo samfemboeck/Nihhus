@@ -19,31 +19,20 @@ public class ScrollingDownBackground : Component, IUpdatable
         _velocity = velocity;
     }
 
-    /*public override void Awake()
+    public override void Mount()
     {
-        var renderer1 = new TiledSpriteRenderer(_sprite){
-            Width = Screen.Width,
-            Height = Screen.Height,
-            ScrollX = _textureScrollX,
-            ScrollY = _textureScrollY,
-            LocalOffset = new Vector2(0, -Screen.Height),
-            Origin = Screen.Center,
-            Color = Color.White * _opacity
-        }; 
-        Entity.AddComponent(renderer1);
+        var rendererTop = new TiledSpriteRenderer(_sprite, new Rectangle(_textureScrollX, _textureScrollY, Screen.Width, Screen.Height), new Vector2(0, -Screen.Height));
+        rendererTop.Origin = Screen.Center;
+        rendererTop.Color = Color.White * _opacity;
+        Entity.AddComponent(rendererTop);
 
-        var renderer2 = new TiledSpriteRenderer(_sprite){
-            Width = Screen.Width,
-            Height = Screen.Height,
-            ScrollX = _textureScrollX,
-            ScrollY = _textureScrollY,
-            Origin = Screen.Center,
-            Color = Color.White * _opacity
-        };
-        Entity.AddComponent(renderer2);
+        var rendererBottom = new TiledSpriteRenderer(_sprite, new Rectangle(_textureScrollX, _textureScrollY, Screen.Width, Screen.Height), Vector2.Zero);
+        rendererBottom.Origin = Screen.Center;
+        rendererBottom.Color = Color.White * _opacity;
+        Entity.AddComponent(rendererBottom);
 
         Transform.Position = Screen.Center;
-    }*/
+    }
 
     public void Update()
     {

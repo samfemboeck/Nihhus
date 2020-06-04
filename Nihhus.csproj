@@ -37,7 +37,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\repos\Zen\Zen.csproj" />
+    <ProjectReference Include="..\Zen\Zen.csproj" />
   </ItemGroup>
 
   <ItemGroup>
