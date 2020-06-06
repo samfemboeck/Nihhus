@@ -85,6 +85,18 @@
 /processorParam:TextureFormat=Color
 /build:Mobs/Squid/beam.png
 
+#begin Mobs/Squid/circle.png
+/importer:TextureImporter
+/processor:TextureProcessor
+/processorParam:ColorKeyColor=255,0,255,255
+/processorParam:ColorKeyEnabled=True
+/processorParam:GenerateMipmaps=False
+/processorParam:PremultiplyAlpha=True
+/processorParam:ResizeToPowerOfTwo=False
+/processorParam:MakeSquare=False
+/processorParam:TextureFormat=Color
+/build:Mobs/Squid/circle.png
+
 #begin Mobs/Squid/glow.png
 /importer:TextureImporter
 /processor:TextureProcessor
@@ -96,16 +108,4 @@
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
 /build:Mobs/Squid/glow.png
-
-#begin Mobs/Squid/ring.png
-/importer:TextureImporter
-/processor:TextureProcessor
-/processorParam:ColorKeyColor=255,0,255,255
-/processorParam:ColorKeyEnabled=True
-/processorParam:GenerateMipmaps=False
-/processorParam:PremultiplyAlpha=True
-/processorParam:ResizeToPowerOfTwo=False
-/processorParam:MakeSquare=False
-/processorParam:TextureFormat=Color
-/build:Mobs/Squid/ring.png
 

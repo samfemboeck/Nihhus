@@ -13,16 +13,16 @@ namespace Nihhus
         protected override void FireUp()
         {
             LoadBackground();
-            LoadMarineSnow();
-            LoadJellyfish();
-            LoadSquid();
-            LoadPlayer();
+            //LoadMarineSnow();
+            //LoadJellyfish();
+            //LoadSquid();
+            //LoadPlayer();
         }
 
         void LoadBackground()
         {
             var texture = Content.Load<Texture2D>("Levels/Jellyfish/background");
-            var sprite = new Sprite(texture, new Rectangle(0, 0, Screen.Width + 2, Screen.Height + 2), Vector2.Zero);
+            var sprite = new Sprite(texture, new Rectangle(200, 200, 500, 500), Vector2.Zero);
             var entity = new Entity("static-background");
 
             entity.AddComponent(new SpriteRenderer(sprite));
@@ -42,6 +42,8 @@ namespace Nihhus
             player.AddComponent<Mover>();
 
             player.AddComponent<Player>();
+
+            player.AddComponent<Collider>();
 
             player.Transform.Position = Screen.Center;
 

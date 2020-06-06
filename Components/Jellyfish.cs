@@ -15,12 +15,12 @@ class Jellyfish : Component
     {
         _mover = GetComponent<Mover>();
         _animator = GetComponent<SpriteAnimator>();
-        _timer = new Timer(Random.NextFloat() * MaxMoveInterval, true, Move);
+        _timer = new Timer(Random.NextFloat() * MaxMoveInterval, false, Move);
     }
 
     private void Move()
     {
-        System.Console.WriteLine("move");
+        _timer = new Timer(Random.NextFloat() * MaxMoveInterval, false, Move);
         _animator.Play("swim", SpriteAnimator.LoopMode.FreezeAtLastFrame);
         Vector2 randomDirection = Random.Range(new Vector2(-1, -1), new Vector2(1, 1));
         randomDirection.Normalize();
