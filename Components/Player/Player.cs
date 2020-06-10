@@ -8,8 +8,9 @@ using Zen.Components;
 
 namespace Nihhus.Components
 {
-    public class Player : Zen.Components.Component, Zen.IUpdatable
+    public class Player : Component, IUpdatable
     {
+        public Transform Transform;
         public Vector2 Move { get; set; }
         public SpriteAnimator Animator;
 
@@ -24,7 +25,15 @@ namespace Nihhus.Components
 
         public Vector2 FacingDirection
         {
-            get => Move == Vector2.Zero ? new Vector2(_lastMoveX, 0) : Move;
+            get
+            {
+                if (Move == Vector2.Zero)
+                    return new Vector2(_lastMoveX, 0);
+                else if (Move.X == 0)
+                    return new Vector2(_lastMoveX, Move.Y);
+                else
+                    return Move;
+            }
         }
 
         StateMachine<Player> _stateMachine;
@@ -34,14 +43,15 @@ namespace Nihhus.Components
 
         public override void Mount()
         {   
-            Mover = Entity.GetComponent<Mover>();
-            Animator = Entity.GetComponent<SpriteAnimator>();
+            Mover = GetComponent<Mover>();
+            Animator = GetComponent<SpriteAnimator>();
+            Transform = GetComponent<Transform>();
             
             _stateMachine = new StateMachine<Player>(this, _idleState);
             _stateMachine.AddState(_swimState);
             _stateMachine.AddState(_catchState);
             
-            Transform.Position = Zen.Screen.Center;
+            Transform.Position = Screen.Center;
             /*VesselColliderBounds = new Vector2(31, 2);
             VesselCatchCollider = new BoxCollider(VesselColliderBounds.X, VesselColliderBounds.Y);
             VesselCatchCollider.IsTrigger = true;
@@ -74,12 +84,12 @@ namespace Nihhus.Components
                 if (Move.X != 0)
                 _lastMoveX = (int) Move.X;
 
-                Animator.FlipX = FacingDirection.X == -1;
+                Transform.FlipX = FacingDirection.X == -1;
 
                 if (kb.IsKeyDown((Keys) Controls.Catch))
                     _stateMachine.ChangeState<PlayerCatchState>();
             }
-
+            
             _stateMachine.Update(Zen.Time.DeltaTime);
         }
     }

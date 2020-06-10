@@ -22,6 +22,7 @@ internal class PlayerSwimState : State<Player>
         if (_context.Move == Vector2.Zero) return;
         
         _context.Mover.Velocity = _context.Move * Speed;
+        _context.Transform.FlipX = _context.FacingDirection.X == -1;
         _context.Transform.LookAt(_context.Transform.Position + _context.Move);
     }
 }

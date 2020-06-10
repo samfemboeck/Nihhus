@@ -1,3 +1,4 @@
+using Microsoft.Xna.Framework;
 using Nihhus.Components;
 using Zen;
 using Zen.Util;
@@ -9,11 +10,19 @@ internal class PlayerCatchState : State<Player>
     public override void Begin()
     {
         _context.Mover.Velocity = _context.FacingDirection * CatchSpeed;
-        _context.Animator.Play("catch");
         _context.Transform.LookAt(_context.Transform.Position + _context.FacingDirection);
-        var timer = new Timer(0.4f, false, () => _machine.ChangeState<PlayerIdleState>());
+        _context.Animator.Play("catch");
+        var timer = new Timer(0.4f, false, ChangeState);
         //_context.VesselCatchCollider.Enabled = true;
         _context.ControlsEnabled = false;
+    }
+
+    void ChangeState()
+    {
+        if (_context.Move != Vector2.Zero)
+            _machine.ChangeState<PlayerSwimState>();
+        else
+            _machine.ChangeState<PlayerIdleState>();
     }
 
     public override void Update(float deltaTime)
