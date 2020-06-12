@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using System.Globalization;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Content;
@@ -9,86 +10,120 @@ using Zen.Util;
 
 namespace Nihhus
 {
-    public class Level1 : Machine
+    public class Level1
     {
-        protected override void FireUp()
+        public Level1()
         {
-            LoadBackground();
-            LoadMarineSnow();
-            LoadJellyfish();
-            LoadSquid();
-            LoadPlayer();
+            List<Entity> entities = new List<Entity>();
+
+            entities.Add(LoadBackground());
+            LoadMarineSnow(entities);
+            entities.Add(LoadJellyfish());
+            entities.Add(LoadSquid());
+            entities.Add(LoadPlayer());
+
+            foreach (Entity entity in entities)
+                EntityManager.AddEntity(entity);
         }
 
-        void LoadBackground()
+        Entity LoadBackground()
         {
             var entity = new Entity("static-background");
-            var texture = Content.Load<Texture2D>("Levels/Jellyfish/background");
-            var sprite = new Sprite(texture, new RectangleF(0, 0, texture.Width, texture.Height), Vector2.Zero, Screen.Width, Screen.Height);
-            
 
             entity.AddComponent<Transform>();
-            entity.AddComponent(new SpriteRenderer(sprite));
 
-            AddEntity(entity);
+            var texture = ContentLoader.Load<Texture2D>("Levels/Jellyfish/background");
+            var sprite = new Sprite(texture);
+            SpriteRenderer spriteRenderer = new SpriteRenderer(sprite, Screen.Width, Screen.Height);
+            entity.AddComponent(spriteRenderer);
+
+            return entity;
         }
 
-        void LoadPlayer()
+        Entity LoadPlayer()
         {
-            var player = new Entity("player");
+            Entity player = new Entity("player");
 
             Transform transform = new Transform();
             transform.Position = Screen.Center;
             player.AddComponent(transform);
 
-            var atlas = Zen.SpriteAtlasLoader.ParseSpriteAtlas("Content/Character/atlas/character.atlas", true);
-            var animator = new SpriteAnimator(atlas);
+            SpriteAtlas atlas = SpriteAtlasLoader.ParseSpriteAtlas("Content/Character/atlas/character.atlas", true);
+            SpriteAnimator animator = new SpriteAnimator(atlas);
             animator.Play("idle");
             player.AddComponent(animator);
 
+            transform.Origin = animator.TargetRectangle.Size * 0.5f;
+
             player.AddComponent<Mover>();
+
+            PolygonCollider polygonCollider = new PolygonCollider();
+            polygonCollider.CollisionLayer = CollisionLayer.Player;
+            player.AddComponent<PolygonCollider>();
 
             player.AddComponent<Player>();
 
-            player.AddComponent<Vertex4Collider>();
-
-            AddEntity(player);
+            return player;
         }
 
-        void LoadJellyfish()
+        Entity LoadJellyfish()
         {
             Entity entity = new Entity("jellyfish");
 
-            entity.AddComponent<Transform>().Position = Screen.Center;
+            Transform transform = entity.AddComponent<Transform>();
+            transform.Position = Screen.Center;
 
-            SpriteAtlas atlas = Zen.SpriteAtlasLoader.ParseSpriteAtlas("Content/Mobs/Jellyfish/atlas/jellyfish.atlas", true);
-            entity.AddComponent(new SpriteAnimator(atlas));
+            SpriteAtlas atlas = SpriteAtlasLoader.ParseSpriteAtlas("Content/Mobs/Jellyfish/atlas/jellyfish.atlas", true);
+            SpriteAnimator animator = new SpriteAnimator(atlas);
+            entity.AddComponent(animator);
+
+            transform.Origin = new Vector2(animator.TargetRectangle.Width * 0.5f, animator.TargetRectangle.Height * 0.5f);
 
             entity.AddComponent<Mover>();
 
+            CircleCollider circleCollider = new CircleCollider();
+            circleCollider.CollisionLayer = CollisionLayer.Jellyfish;
+            entity.AddComponent(circleCollider);
+
             entity.AddComponent<Jellyfish>();
-    
-            AddEntity(entity);
+
+            return entity;
         }
 
-        void LoadSquid()
+        Entity LoadSquid()
         {
-            Entity entity = AddEntity("squid");
-            entity.AddComponent(new Squid(Content));
+            Entity entity = new Entity("squid");
+
+            SpriteAtlas spriteAtlas = SpriteAtlasLoader.ParseSpriteAtlas("Content/Mobs/Squid/atlas/squid.atlas", true);
+            SpriteAnimator spriteAnimator = new SpriteAnimator(spriteAtlas);
+            entity.AddComponent(spriteAnimator);
+
+            Transform transform = entity.AddComponent<Transform>();
+            transform.Origin = spriteAnimator.TargetRectangle.Size * 0.5f;
+            transform.Position = new Vector2(Screen.Width * 0.5f, Screen.Height - 0.5f * spriteAnimator.TargetRectangle.Height);
+
+            entity.AddComponent<Mover>();
+
+            entity.AddComponent<Squid>();
+
+            return entity;
         }
 
-        void LoadMarineSnow()
+        void LoadMarineSnow(List<Entity> entities)
         {
-            var texture = Content.Load<Texture2D>("Levels/Jellyfish/marine-snow");
+            Texture2D texture = ContentLoader.Load<Texture2D>("Levels/Jellyfish/marine-snow");
 
-            Entity front = AddEntity("marine-snow-front");
+            Entity front = new Entity("marine-snow-front");
             front.AddComponent(new MarineSnow(texture, new RectangleF(0, 0, Screen.Width, Screen.Height), new Vector2(0, 50)));
+            entities.Add(front);
 
-            Entity middle = AddEntity("marine-snow-middle");
-            middle.AddComponent(new MarineSnow(texture, new RectangleF(texture.Width * 1/3f, texture.Height * 1/3f, Screen.Width, Screen.Height), new Vector2(0, 25)));
+            Entity middle = new Entity("marine-snow-middle");
+            middle.AddComponent(new MarineSnow(texture, new RectangleF(texture.Width * 1 / 3f, texture.Height * 1 / 3f, Screen.Width, Screen.Height), new Vector2(0, 25)));
+            entities.Add(middle);
 
-            Entity back = AddEntity("marine-snow-back");
-            back.AddComponent(new MarineSnow(texture, new RectangleF(texture.Width * 2/3f, texture.Height * 2/3f, Screen.Width, Screen.Height), new Vector2(0, 12.5f)));
+            Entity back = new Entity("marine-snow-back");
+            back.AddComponent(new MarineSnow(texture, new RectangleF(texture.Width * 2 / 3f, texture.Height * 2 / 3f, Screen.Width, Screen.Height), new Vector2(0, 12.5f)));
+            entities.Add(back);
         }
     }
 }

@@ -12,12 +12,12 @@ class Jellyfish : Component
     Timer _timer;
     Transform _transform;
 
-    public override void Mount()
+    public override void Awake()
     {
         _mover = GetComponent<Mover>();
         _animator = GetComponent<SpriteAnimator>();
         _transform = GetComponent<Transform>();
-        _timer = new Timer(Random.NextFloat() * MaxMoveInterval, false, Move);
+        //_timer = new Timer(Random.NextFloat() * MaxMoveInterval, false, Move);
     }
 
     private void Move()
@@ -33,5 +33,6 @@ class Jellyfish : Component
     public override void Destroy()
     {
         _timer.Destroy();
+        base.Destroy();
     }
 }

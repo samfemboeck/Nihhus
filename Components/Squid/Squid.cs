@@ -4,54 +4,45 @@ using Microsoft.Xna.Framework.Graphics;
 using Zen;
 using Zen.Components;
 
-public class Squid : Component, IUpdatable
+public class Squid : Component, IUpdatable, ITransformObserver
 {
     public const float Speed = 50;
-    public Sprite Ring;
-    public Sprite Glow;
-    public Sprite Beam;
     public Mover Mover;
-    public SpriteAnimator Animator;
+    public SpriteAnimator SpriteAnimator;
     public Transform Transform;
+
     StateMachine<Squid> _state;
     SquidIdleState _idleState = new SquidIdleState();
     SquidTeleState _teleState = new SquidTeleState();
     SquidLaserState _laserState = new SquidLaserState();
-    ContentManager _content;
 
-    public Squid(ContentManager content)
+    Vector2 _localHeadPosition = new Vector2(145, 75);
+    Vector2 _globalHeadPosition;
+
+    public Squid()
     {
-        _content = content;
+        // cache textures
+        ContentLoader.Load<Texture2D>("Mobs/Squid/circle");
+        ContentLoader.Load<Texture2D>("Mobs/Squid/beam");
+        ContentLoader.Load<Texture2D>("Mobs/Squid/glow");
     }
 
-    public override void LoadComponents()
+    public override void Awake()
     {
-        Transform = AddComponent<Transform>();
+        Transform = GetComponent<Transform>();
+        Mover = GetComponent<Mover>();
+        SpriteAnimator = GetComponent<SpriteAnimator>();
 
-        SpriteAtlas atlas = SpriteAtlasLoader.ParseSpriteAtlas("Content/Mobs/Squid/atlas/squid.atlas", true);
-        Animator = new SpriteAnimator(atlas);
-        AddComponent(Animator);
-
-        Mover = AddComponent<Mover>();
-
-        Texture2D texture = _content.Load<Texture2D>("Mobs/Squid/circle");
-        Ring = new Sprite(texture);
-        texture = _content.Load<Texture2D>("Mobs/Squid/glow");
-        Glow = new Sprite(texture);
-        texture = _content.Load<Texture2D>("Mobs/Squid/beam");
-        Beam = new Sprite(texture);
-    }
-
-    public override void Mount()
-    {
-        float height = Animator.CurrentAnimation.Sprites[0].UvRect.Height;
-        Transform.Position = new Vector2(Screen.Width * 0.5f, Screen.Height - 0.5f * height);
-
-        Mover.Velocity = new Vector2(-1 * Speed, 0);
-
-        _state = new StateMachine<Squid>(this, _idleState);
-        _state.AddState(_teleState);
+        _state = new StateMachine<Squid>(this, _teleState);
+        _state.AddState(_idleState);
         _state.AddState(_laserState);
+    }
+    
+    public Entity CreateCircle()
+    {
+        Entity entity = new Entity("circle");
+        entity.AddComponent(new Circle(_globalHeadPosition));
+        return entity;
     }
 
     public Color GetColor()
@@ -62,5 +53,14 @@ public class Squid : Component, IUpdatable
     public void Update()
     {
         _state.Update(Time.DeltaTime);
+    }
+
+    public void TransformChanged(Transform transform)
+    {
+    }
+
+    public void TransformInitialized(Transform transform) 
+    {
+        _globalHeadPosition = Vector2.Transform(_localHeadPosition, transform.TransformMatrix);
     }
 }

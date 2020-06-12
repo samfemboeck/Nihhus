@@ -13,6 +13,7 @@ namespace Nihhus.Components
         public Transform Transform;
         public Vector2 Move { get; set; }
         public SpriteAnimator Animator;
+        public PolygonCollider Collider;
 
         public Mover Mover;
 
@@ -29,8 +30,6 @@ namespace Nihhus.Components
             {
                 if (Move == Vector2.Zero)
                     return new Vector2(_lastMoveX, 0);
-                else if (Move.X == 0)
-                    return new Vector2(_lastMoveX, Move.Y);
                 else
                     return Move;
             }
@@ -41,11 +40,12 @@ namespace Nihhus.Components
         State<Player> _swimState = new PlayerSwimState();
         State<Player> _catchState = new PlayerCatchState();
 
-        public override void Mount()
-        {   
+        public override void Start()
+        {
             Mover = GetComponent<Mover>();
             Animator = GetComponent<SpriteAnimator>();
             Transform = GetComponent<Transform>();
+            Collider = GetComponent<PolygonCollider>();
             
             _stateMachine = new StateMachine<Player>(this, _idleState);
             _stateMachine.AddState(_swimState);
@@ -84,7 +84,7 @@ namespace Nihhus.Components
                 if (Move.X != 0)
                 _lastMoveX = (int) Move.X;
 
-                Transform.FlipX = FacingDirection.X == -1;
+                Transform.Flip = FacingDirection.X == -1 ? Flip.X : Flip.None;
 
                 if (kb.IsKeyDown((Keys) Controls.Catch))
                     _stateMachine.ChangeState<PlayerCatchState>();

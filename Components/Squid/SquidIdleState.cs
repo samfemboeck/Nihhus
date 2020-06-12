@@ -6,11 +6,11 @@ public class SquidIdleState : State<Squid>
 {
     public override void Begin()
     {
-        _context.Animator.Play("idle");
+        _context.SpriteAnimator.Play("idle");
         _context.Mover.Velocity = new Vector2(-1 * Squid.Speed, 0);
-        _context.Animator.Color = _context.GetColor();
+        _context.SpriteAnimator.Color = _context.GetColor();
         
-        if (Random.Chance(50))
+        if (Random.Chance(100))
             new Timer(5, false, () => _machine.ChangeState<SquidTeleState>());
         else
             new Timer(5, false, () => _machine.ChangeState<SquidLaserState>());

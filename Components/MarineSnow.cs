@@ -17,19 +17,19 @@ public class MarineSnow : Component, ITransformObserver
         _velocity = velocity;
     }
 
-    public override void LoadComponents()
+    public override void AddComponents()
     {
         AddComponent<Transform>();
 
         AddComponent<Mover>().Velocity = _velocity;
 
-        Sprite sprite = new Sprite(_texture, _uvRectangle, Vector2.Zero, Screen.Width, Screen.Height);
-        SpriteRenderer rendererTop = new SpriteRenderer(sprite);
+        Sprite sprite = new Sprite(_texture, _uvRectangle);
+        SpriteRenderer rendererTop = new SpriteRenderer(sprite, Screen.Width, Screen.Height);
         rendererTop.Material = Material.LinearWrap;
-        rendererTop.LocalOffset = new Vector2(0, -Screen.Height);
+        rendererTop.PositionOffset = new Vector2(0, -Screen.Height);
         AddComponent(rendererTop);
 
-        SpriteRenderer rendererBottom = new SpriteRenderer(sprite);
+        SpriteRenderer rendererBottom = new SpriteRenderer(sprite, Screen.Width, Screen.Height);
         rendererBottom.Material = Material.LinearWrap;
         AddComponent(rendererBottom);
     }
@@ -39,4 +39,6 @@ public class MarineSnow : Component, ITransformObserver
         if (transform.Position.Y >= Screen.Height)
             transform.Position = Vector2.Zero;
     }
+
+    public void TransformInitialized(Transform transform) {}
 }
